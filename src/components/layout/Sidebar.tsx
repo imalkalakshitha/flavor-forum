@@ -2,13 +2,10 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
-  Clock,
   FileText,
   Home,
   Layers,
-  MessageSquare,
   Trophy,
-  Users,
   Utensils,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -23,10 +20,6 @@ export const Sidebar = ({ isOpen }: SidebarProps) => {
     { name: "Recipes", icon: <Utensils className="h-5 w-5" />, path: "/recipes" },
     { name: "Learning Plans", icon: <FileText className="h-5 w-5" />, path: "/learning-plans" },
     { name: "Cooking Challenges", icon: <Trophy className="h-5 w-5" />, path: "/challenges" },
-    { name: "Community", icon: <Users className="h-5 w-5" />, path: "/community" },
-    { name: "Messages", icon: <MessageSquare className="h-5 w-5" />, path: "/messages" },
-    { name: "Recent Activity", icon: <Clock className="h-5 w-5" />, path: "/activity" },
-    { name: "Saved Items", icon: <Layers className="h-5 w-5" />, path: "/saved" },
   ];
 
   return (

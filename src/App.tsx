@@ -13,6 +13,8 @@ import RecipePage from "./pages/RecipePage";
 import CreateRecipePage from "./pages/CreateRecipePage";
 import ProfilePage from "./pages/ProfilePage";
 import ProfileEditPage from "./pages/ProfileEditPage";
+import LearningPlansPage from "./pages/LearningPlansPage";
+import ChallengesPage from "./pages/ChallengesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +38,8 @@ const App = () => (
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/profile/:username" element={<ProfilePage />} />
             <Route path="/profile/edit" element={<ProfileEditPage />} />
+            <Route path="/learning-plans" element={<LearningPlansPage />} />
+            <Route path="/challenges" element={<ChallengesPage />} />
           </Route>
           
           <Route path="*" element={<NotFound />} />
