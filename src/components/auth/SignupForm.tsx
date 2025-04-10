@@ -1,11 +1,11 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 const SignupForm = () => {
   const [name, setName] = useState("");
@@ -13,50 +13,110 @@ const SignupForm = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ 
+    name?: string; 
+    email?: string; 
+    password?: string; 
+    confirmPassword?: string;
+    general?: string;
+  }>({});
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const validateForm = () => {
+    const newErrors: { 
+      name?: string; 
+      email?: string; 
+      password?: string; 
+      confirmPassword?: string;
+    } = {};
+    let isValid = true;
+
+    if (!name) {
+      newErrors.name = "Name is required";
+      isValid = false;
+    }
+
+    if (!email) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "Email is invalid";
+      isValid = false;
+    }
+
+    if (!password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    } else if (password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+      isValid = false;
+    }
+
+    if (!confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password";
+      isValid = false;
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!name || !email || !password || !confirmPassword) {
-      toast({
-        title: "Error",
-        description: "Please fill in all fields",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (password !== confirmPassword) {
-      toast({
-        title: "Error",
-        description: "Passwords do not match",
-        variant: "destructive",
-      });
+    if (!validateForm()) {
       return;
     }
     
     setLoading(true);
+    setErrors({});
     
-    // Normally, you would connect to your backend here
-    // For now, we'll just show a success message
-    setTimeout(() => {
+    try {
+      // Normally, you would connect to your backend here
       console.log("Signup attempt with:", { name, email, password });
+      
+      // Simulate backend call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       toast({
         title: "Account created!",
         description: "You have been registered successfully.",
       });
-      setLoading(false);
       
-      // In a real implementation, you would redirect after successful signup
-      window.location.href = "/home";
-    }, 1500);
+      // Redirect after successful signup
+      navigate("/home");
+    } catch (error) {
+      console.error("Signup error:", error);
+      setErrors({ 
+        general: "Failed to create account. Please try again." 
+      });
+      toast({
+        title: "Error",
+        description: "Failed to create account. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleSignup = () => {
-    toast({
-      description: "Google signup would be implemented with your backend",
-    });
+    try {
+      toast({
+        description: "Google signup would be implemented with your backend",
+      });
+    } catch (error) {
+      console.error("Google signup error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to sign up with Google. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -65,6 +125,12 @@ const SignupForm = () => {
         <h1 className="text-3xl font-bold">Create an account</h1>
         <p className="text-muted-foreground">Enter your information to get started</p>
       </div>
+      
+      {errors.general && (
+        <div className="p-3 rounded-md bg-destructive/15 text-destructive text-sm">
+          {errors.general}
+        </div>
+      )}
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
@@ -75,8 +141,12 @@ const SignupForm = () => {
             placeholder="John Doe" 
             value={name}
             onChange={(e) => setName(e.target.value)}
-            required
+            className={errors.name ? "border-destructive" : ""}
+            disabled={loading}
           />
+          {errors.name && (
+            <p className="text-sm font-medium text-destructive mt-1">{errors.name}</p>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
@@ -86,8 +156,12 @@ const SignupForm = () => {
             placeholder="chef@example.com" 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
+            className={errors.email ? "border-destructive" : ""}
+            disabled={loading}
           />
+          {errors.email && (
+            <p className="text-sm font-medium text-destructive mt-1">{errors.email}</p>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
@@ -97,8 +171,12 @@ const SignupForm = () => {
             placeholder="••••••••" 
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
+            className={errors.password ? "border-destructive" : ""}
+            disabled={loading}
           />
+          {errors.password && (
+            <p className="text-sm font-medium text-destructive mt-1">{errors.password}</p>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="confirm-password">Confirm Password</Label>
@@ -108,8 +186,12 @@ const SignupForm = () => {
             placeholder="••••••••" 
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            required
+            className={errors.confirmPassword ? "border-destructive" : ""}
+            disabled={loading}
           />
+          {errors.confirmPassword && (
+            <p className="text-sm font-medium text-destructive mt-1">{errors.confirmPassword}</p>
+          )}
         </div>
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? (
@@ -138,6 +220,7 @@ const SignupForm = () => {
         type="button"
         className="w-full"
         onClick={handleGoogleSignup}
+        disabled={loading}
       >
         <svg
           className="mr-2 h-4 w-4"

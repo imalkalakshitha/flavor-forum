@@ -1,51 +1,93 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const validateForm = () => {
+    const newErrors: { email?: string; password?: string } = {};
+    let isValid = true;
+
+    if (!email) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "Email is invalid";
+      isValid = false;
+    }
+
+    if (!password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password) {
-      toast({
-        title: "Error",
-        description: "Please fill in all fields",
-        variant: "destructive",
-      });
+    if (!validateForm()) {
       return;
     }
     
     setLoading(true);
+    setErrors({});
     
-    // Normally, you would connect to your backend here
-    // For now, we'll just show a success message
-    setTimeout(() => {
+    try {
+      // Normally, you would connect to your backend here
       console.log("Login attempt with:", { email, password });
+      
+      // Simulate backend call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       toast({
         title: "Success!",
         description: "You have been logged in successfully.",
       });
-      setLoading(false);
       
-      // In a real implementation, you would redirect after successful login
-      window.location.href = "/home";
-    }, 1500);
+      // Redirect after successful login
+      navigate("/home");
+    } catch (error) {
+      console.error("Login error:", error);
+      setErrors({ 
+        general: "Failed to log in. Please check your credentials and try again." 
+      });
+      toast({
+        title: "Error",
+        description: "Failed to log in. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleLogin = () => {
-    toast({
-      description: "Google login would be implemented with your backend",
-    });
+    try {
+      toast({
+        description: "Google login would be implemented with your backend",
+      });
+    } catch (error) {
+      console.error("Google login error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to sign in with Google. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -54,6 +96,12 @@ const LoginForm = () => {
         <h1 className="text-3xl font-bold">Welcome back</h1>
         <p className="text-muted-foreground">Enter your credentials to sign in</p>
       </div>
+      
+      {errors.general && (
+        <div className="p-3 rounded-md bg-destructive/15 text-destructive text-sm">
+          {errors.general}
+        </div>
+      )}
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
@@ -64,8 +112,12 @@ const LoginForm = () => {
             placeholder="chef@example.com" 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
+            className={errors.email ? "border-destructive" : ""}
+            disabled={loading}
           />
+          {errors.email && (
+            <p className="text-sm font-medium text-destructive mt-1">{errors.email}</p>
+          )}
         </div>
         <div className="space-y-2">
           <div className="flex items-center justify-between">
@@ -80,8 +132,12 @@ const LoginForm = () => {
             placeholder="••••••••" 
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
+            className={errors.password ? "border-destructive" : ""}
+            disabled={loading}
           />
+          {errors.password && (
+            <p className="text-sm font-medium text-destructive mt-1">{errors.password}</p>
+          )}
         </div>
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? (
@@ -110,6 +166,7 @@ const LoginForm = () => {
         type="button"
         className="w-full"
         onClick={handleGoogleLogin}
+        disabled={loading}
       >
         <svg
           className="mr-2 h-4 w-4"
