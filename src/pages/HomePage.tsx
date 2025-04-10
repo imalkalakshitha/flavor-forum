@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { RecipeCard } from "@/components/recipes/RecipeCard";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { Trending, Clock, Flame, Award, ChefHat } from "lucide-react";
+import { TrendingUp, Clock, Flame, Award, ChefHat } from "lucide-react";
 
 // Mock data for recipes
 const recipesMock = [
@@ -85,13 +84,11 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // In a real app, you would fetch data from your backend here
     console.log("Home page loaded");
   }, []);
 
   const loadMore = () => {
     setLoading(true);
-    // In a real app, you would fetch more recipes
     setTimeout(() => {
       setRecipes([...recipes, ...recipesMock.slice(0, 3)]);
       setLoading(false);
@@ -108,7 +105,7 @@ const HomePage = () => {
         <div className="flex justify-between items-center">
           <TabsList className="mb-4">
             <TabsTrigger value="trending" className="flex items-center">
-              <Trending className="mr-2 h-4 w-4" />
+              <TrendingUp className="mr-2 h-4 w-4" />
               Trending
             </TabsTrigger>
             <TabsTrigger value="recent" className="flex items-center">
