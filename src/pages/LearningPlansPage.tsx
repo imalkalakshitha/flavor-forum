@@ -1,14 +1,12 @@
-
 import { useState } from "react";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart, MessageSquare, Share2, BookmarkPlus, GraduationCap, Clock, Users } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 
-// Mock data for learning plans
 const learningPlansMock = [
   {
     id: "1",
@@ -182,17 +180,16 @@ const LearningPlanCard = ({
 
 const LearningPlansPage = () => {
   const [learningPlans, setLearningPlans] = useState(learningPlansMock);
+  const navigate = useNavigate();
   
   return (
     <div className="container max-w-6xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Learning Plans</h1>
-        <Link to="/create-learning-plan">
-          <Button>
-            <GraduationCap className="mr-2 h-4 w-4" />
-            Create Plan
-          </Button>
-        </Link>
+        <Button onClick={() => navigate("/create-learning-plan")}>
+          <GraduationCap className="mr-2 h-4 w-4" />
+          Create Plan
+        </Button>
       </div>
       
       <Tabs defaultValue="all" className="w-full">

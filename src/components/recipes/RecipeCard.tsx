@@ -1,9 +1,11 @@
 
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Heart, MessageSquare, Share2, BookmarkPlus } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface RecipeCardProps {
   id: string;
@@ -28,6 +30,26 @@ export const RecipeCard = ({
   comments,
   cookingTime,
 }: RecipeCardProps) => {
+  const [liked, setLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(likes);
+  const { toast } = useToast();
+
+  const handleLike = () => {
+    if (liked) {
+      setLiked(false);
+      setLikesCount(likesCount - 1);
+      toast({
+        description: "You unliked this recipe",
+      });
+    } else {
+      setLiked(true);
+      setLikesCount(likesCount + 1);
+      toast({
+        description: "You liked this recipe",
+      });
+    }
+  };
+
   return (
     <Card className="overflow-hidden recipe-card-hover border border-border/40">
       <Link to={`/recipes/${id}`}>
@@ -64,25 +86,50 @@ export const RecipeCard = ({
       
       <CardFooter className="flex justify-between p-4 pt-0">
         <div className="flex space-x-4">
-          <Button variant="ghost" size="icon" className="h-8 w-8">
-            <Heart className="h-4 w-4" />
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className={`h-8 w-8 ${liked ? "text-red-500" : ""}`}
+            onClick={handleLike}
+          >
+            <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} />
             <span className="sr-only">Like</span>
           </Button>
-          <span className="text-sm text-muted-foreground">{likes}</span>
+          <span className="text-sm text-muted-foreground">{likesCount}</span>
           
-          <Button variant="ghost" size="icon" className="h-8 w-8">
-            <MessageSquare className="h-4 w-4" />
-            <span className="sr-only">Comment</span>
-          </Button>
+          <Link to={`/recipes/${id}#comments`}>
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <MessageSquare className="h-4 w-4" />
+              <span className="sr-only">Comment</span>
+            </Button>
+          </Link>
           <span className="text-sm text-muted-foreground">{comments}</span>
         </div>
         
         <div className="flex space-x-1">
-          <Button variant="ghost" size="icon" className="h-8 w-8">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-8 w-8"
+            onClick={() => {
+              toast({
+                description: "Recipe saved to your collection",
+              });
+            }}
+          >
             <BookmarkPlus className="h-4 w-4" />
             <span className="sr-only">Save</span>
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-8 w-8"
+            onClick={() => {
+              toast({
+                description: "Recipe link copied to clipboard",
+              });
+            }}
+          >
             <Share2 className="h-4 w-4" />
             <span className="sr-only">Share</span>
           </Button>
