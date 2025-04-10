@@ -10,6 +10,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import RecipePage from "./pages/RecipePage";
+import RecipesPage from "./pages/RecipesPage";
 import CreateRecipePage from "./pages/CreateRecipePage";
 import ProfilePage from "./pages/ProfilePage";
 import ProfileEditPage from "./pages/ProfileEditPage";
@@ -33,6 +34,7 @@ const App = () => (
           {/* Protected routes - In a real app, these would be protected with auth */}
           <Route element={<MainLayout />}>
             <Route path="/home" element={<HomePage />} />
+            <Route path="/recipes" element={<RecipesPage />} />
             <Route path="/recipes/:id" element={<RecipePage />} />
             <Route path="/create" element={<CreateRecipePage />} />
             <Route path="/profile" element={<ProfilePage />} />
