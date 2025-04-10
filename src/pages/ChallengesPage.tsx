@@ -9,6 +9,9 @@ import { Link } from "react-router-dom";
 import { Trophy, Calendar, Clock, Users, Heart, MessageSquare, Share2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
+// Define challenge status as a specific type to match ChallengeCardProps
+type ChallengeStatus = "active" | "upcoming" | "completed";
+
 // Mock data for challenges
 const challengesMock = [
   {
@@ -16,7 +19,7 @@ const challengesMock = [
     title: "30-Minute Meals Challenge",
     description: "Create a delicious, balanced meal in just 30 minutes using only 5 main ingredients.",
     imageUrl: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&q=75&fit=crop&w=600&h=350",
-    status: "active",
+    status: "active" as ChallengeStatus,
     startDate: "Apr 1, 2025",
     endDate: "Apr 15, 2025",
     participants: 78,
@@ -31,7 +34,7 @@ const challengesMock = [
     title: "Plant-Based Dessert Challenge",
     description: "Create a delicious dessert using only plant-based ingredients. Get creative!",
     imageUrl: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&q=75&fit=crop&w=600&h=350",
-    status: "active",
+    status: "active" as ChallengeStatus,
     startDate: "Apr 5, 2025",
     endDate: "Apr 20, 2025",
     participants: 64,
@@ -46,7 +49,7 @@ const challengesMock = [
     title: "Global Fusion Challenge",
     description: "Combine techniques and flavors from two different cultural cuisines to create something unique.",
     imageUrl: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?auto=format&q=75&fit=crop&w=600&h=350",
-    status: "upcoming",
+    status: "upcoming" as ChallengeStatus,
     startDate: "Apr 20, 2025",
     endDate: "May 5, 2025",
     participants: 32,
@@ -61,7 +64,7 @@ const challengesMock = [
     title: "Zero Waste Cooking Challenge",
     description: "Create a meal using commonly discarded food parts (stems, peels, etc.) to reduce food waste.",
     imageUrl: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&q=75&fit=crop&w=600&h=350",
-    status: "completed",
+    status: "completed" as ChallengeStatus,
     startDate: "Mar 10, 2025",
     endDate: "Mar 25, 2025",
     participants: 93,
@@ -247,7 +250,10 @@ const ChallengesPage = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {activeChallenges.map((challenge) => (
-            <ChallengeCard key={challenge.id} {...challenge} />
+            <ChallengeCard 
+              key={challenge.id} 
+              {...challenge} 
+            />
           ))}
         </div>
       </div>
@@ -260,7 +266,10 @@ const ChallengesPage = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {upcomingChallenges.map((challenge) => (
-            <ChallengeCard key={challenge.id} {...challenge} />
+            <ChallengeCard 
+              key={challenge.id} 
+              {...challenge} 
+            />
           ))}
         </div>
       </div>
@@ -273,7 +282,10 @@ const ChallengesPage = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {completedChallenges.map((challenge) => (
-            <ChallengeCard key={challenge.id} {...challenge} />
+            <ChallengeCard 
+              key={challenge.id} 
+              {...challenge} 
+            />
           ))}
         </div>
       </div>
